@@ -54,16 +54,72 @@ export default {
       this.editingKeymap = {};
     },
     handleCompile() {
-      fetch('/keymap', {
-        method: 'POST',
+      this.downloading = true;
+      fetch("/api/editor/keymap", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.editingKeymap)
+        body: JSON.stringify(this.editingKeymap),
       })
-    }
-  }
-}
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          const data = JSON.stringify(res);
+          const blob = new Blob([data], { type: "text/plain" });
+
+          let a = document.createElement("a");
+          a.download = "keymap.json";
+          a.href = window.URL.createObjectURL(blob);
+          a.dataset.downloadurl = ["text/json", a.download, a.href].join(":");
+
+          const event = new MouseEvent("click", {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+          });
+          return a.dispatchEvent(event);
+        })
+        .then((_) => {
+          this.downloading = false;
+        });
+    },
+    handleBuild() {
+      this.downloading = true;
+      fetch("/api/editor/build", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.editingKeymap),
+      })
+        .then(async (res) => {
+          const blobResult = await res.blob();
+          const blob = new Blob([blobResult]);
+
+          let a = document.createElement("a");
+          a.download = "bt60.uf2";
+          a.href = window.URL.createObjectURL(blob);
+          a.dataset.downloadurl = [
+            "application/octet-stream",
+            a.download,
+            a.href,
+          ].join(":");
+
+          const event = new MouseEvent("click", {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+          });
+          return a.dispatchEvent(event);
+        })
+        .then((_) => {
+          this.downloading = false;
+        });
+    },
+  },
+};
 </script>
 
 <template>
@@ -79,11 +135,23 @@ export default {
       <div id="actions">
         <button
           v-if="source === 'local'"
-          v-text="`Save Local`"
+          v-text="`Download Keymap`"
           id="compile"
-          :disabled="!this.editingKeymap.keyboard"
+          :disabled="!this.editingKeymap.keyboard || downloading"
           @click="handleCompile"
         />
+
+        <button
+          v-if="source === 'local'"
+          id="compile"
+          :disabled="!this.editingKeymap.keyboard || downloading"
+          @click="handleBuild"
+        >
+          <template v-if="!downloading">Download Firmware </template>
+          <div v-if="downloading">
+            <spinner /> <span>building firmware...</span>
+          </div>
+        </button>
 
         <button
           v-if="source === 'github'"
@@ -93,13 +161,13 @@ export default {
         >
           <template v-if="saving">Saving </template>
           <template v-else>Commit Changes</template>
-          <spinner v-if="saving" />
+          <spinner v-if="saving || downloading" />
         </button>
       </div>
     </template>
 
     <a class="github-link" href="https://github.com/nickcoutsos/keymap-editor">
-      <i class="fab fa-github" />/nickcoutsos/keymap-editor
+      custom port of <i class="fab fa-github" />/nickcoutsos/keymap-editor
     </a>
   </initialize>
 </template>
