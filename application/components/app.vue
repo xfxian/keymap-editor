@@ -1,19 +1,18 @@
 <script>
+import Initialize from "./initialize.vue";
+import Keymap from "./keymap.vue";
+import KeyboardPicker from "./keyboard-picker.vue";
+import Spinner from "./spinner.vue";
 
-import Initialize from './initialize.vue'
-import Keymap from './keymap.vue'
-import KeyboardPicker from './keyboard-picker.vue'
-import Spinner from './spinner.vue'
-
-import * as config from '../config'
-import github from './github/api'
+import * as config from "../config";
+import github from "./github/api";
 
 export default {
   components: {
     keymap: Keymap,
     KeyboardPicker,
     Initialize,
-    Spinner
+    Spinner,
   },
   data() {
     return {
@@ -24,29 +23,35 @@ export default {
       keymap: {},
       editingKeymap: {},
       saving: false,
+      downloading: false,
       terminalOpen: false,
-      socket: null
-    }
+      socket: null,
+    };
   },
   methods: {
     handleKeyboardSelected({ source, layout, keymap, ...other }) {
-      this.source = source
-      this.sourceOther = other
-      this.layout.splice(0, this.layout.length, ...layout)
-      Object.assign(this.keymap, keymap)
-      this.editingKeymap = {}
+      this.source = source;
+      this.sourceOther = other;
+      this.layout.splice(0, this.layout.length, ...layout);
+      Object.assign(this.keymap, keymap);
+      this.editingKeymap = {};
     },
     handleUpdateKeymap(keymap) {
-      Object.assign(this.editingKeymap, keymap)
+      Object.assign(this.editingKeymap, keymap);
     },
     async handleCommitChanges() {
-      const { repository, branch } = this.sourceOther.github
+      const { repository, branch } = this.sourceOther.github;
 
-      this.saving = true
-      await github.commitChanges(repository, branch, this.layout, this.editingKeymap)
-      this.saving = false
-      Object.assign(this.keymap, this.editingKeymap)
-      this.editingKeymap = {}
+      this.saving = true;
+      await github.commitChanges(
+        repository,
+        branch,
+        this.layout,
+        this.editingKeymap
+      );
+      this.saving = false;
+      Object.assign(this.keymap, this.editingKeymap);
+      this.editingKeymap = {};
     },
     handleCompile() {
       fetch('/keymap', {
@@ -132,5 +137,4 @@ button[disabled] {
 
   color: royalblue;
 }
-
 </style>
