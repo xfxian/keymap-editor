@@ -94,6 +94,16 @@ export default {
         },
         body: JSON.stringify(this.editingKeymap),
       })
+        .then((res) => {
+          const generatedKeymap = res.body;
+
+          console.log("the payload", generatedKeymap);
+
+          const BUILDER_API_ENDPOINT =
+            "https://zmk-pw-builder-4u34d3yfla-de.a.run.app";
+
+          return fetch(BUILDER_API_ENDPOINT); // TODO: fetch with payload
+        })
         .then(async (res) => {
           const blobResult = await res.blob();
           const blob = new Blob([blobResult]);
@@ -115,6 +125,10 @@ export default {
           return a.dispatchEvent(event);
         })
         .then((_) => {
+          this.downloading = false;
+        })
+        .catch((err) => {
+          console.warn(err);
           this.downloading = false;
         });
     },
