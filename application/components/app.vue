@@ -94,15 +94,23 @@ export default {
         },
         body: JSON.stringify(this.editingKeymap),
       })
-        .then((res) => {
-          const generatedKeymap = res.body;
+        .then(async (res) => {
+          const generatedKeymap = await res.text();
 
-          console.log("the payload", generatedKeymap);
+          console.log("the payload", generatedKeymap, typeof generatedKeymap);
 
           const BUILDER_API_ENDPOINT =
             "https://zmk-pw-builder-4u34d3yfla-de.a.run.app";
 
-          return fetch(BUILDER_API_ENDPOINT); // TODO: fetch with payload
+          // const BUILDER_API_ENDPOINT = "http://localhost:8080";
+
+          return fetch(BUILDER_API_ENDPOINT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ keymapAsString: generatedKeymap }),
+          });
         })
         .then(async (res) => {
           const blobResult = await res.blob();
