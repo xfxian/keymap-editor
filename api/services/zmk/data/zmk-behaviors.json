@@ -139,5 +139,27 @@
     "code": "&none",
     "name": "None",
     "params": []
+  },
+  {
+    "code": "&bl",
+    "name": "Backlight control",
+    "params": ["command"],
+    "includes": ["#include <dt-bindings/zmk/backlight.h>"],
+    "commands": [{
+      "code": "BL_TOG",
+      "description": "Toggles the backlighting on and off"
+    }, {
+      "code": "BL_ON",
+      "description": "Turns backlighting on"
+    }, {
+      "code": "BL_OFF",
+      "description": "Turns backlighting off"
+    }, {
+      "code": "BL_INC",
+      "description": "Increases the brightness of the backlight"
+    }, {
+      "code": "BL_DEC",
+      "description": "Decreases the brightness of the backlight"
+    }]
   }
 ]
