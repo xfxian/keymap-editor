@@ -11,7 +11,7 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(cors({
-  origin: 'https://nickcoutsos.github.io'
+  origin: 'https://polarityworks.github.io'
 }))
 
 if (process.env.ENABLE_DEV_SERVER) {
@@ -24,4 +24,3 @@ app.use('/github', require('./routes/github'))
 app.get('/health', (req, res) => res.sendStatus(200))
 
 module.exports = app
-
