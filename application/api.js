@@ -12,12 +12,12 @@ export function loadKeycodes() {
   return fetch(`${config.apiBaseUrl}/keycodes`).then(response => response.json())
 }
 
-export function loadKeymap() {
-  return fetch(`${config.apiBaseUrl}/keymap`)
+export function loadKeymap(keyboardId) {
+  return fetch(`${config.apiBaseUrl}/keymap?id=${keyboardId}`)
     .then(response => response.json())
 }
 
-export function loadLayout() {
-  return fetch(`${config.apiBaseUrl}/layout`)
+export function loadLayout(keyboardId) {
+  return fetch(`${config.apiBaseUrl}/layout?id=${keyboardId}`)
     .then(response => response.json())
 }
