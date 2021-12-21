@@ -60,7 +60,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.editingKeymap),
+        body: JSON.stringify({ id: this.source, keymap: this.editingKeymap }),
       })
         .then((res) => {
           return res.json();
@@ -92,7 +92,7 @@ export default {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.editingKeymap),
+        body: JSON.stringify({ id: this.source, keymap: this.editingKeymap }),
       })
         .then(async (res) => {
           const generatedKeymap = await res.text();
