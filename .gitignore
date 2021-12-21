@@ -81,7 +81,7 @@ typings/
 
 dist
 qmk_firmware
-zmk-config
+#zmk-config
 
 private-key.pem
 .env
