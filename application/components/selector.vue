@@ -7,10 +7,10 @@
       @input="$emit('update:modelValue', $event.target.value)"
     >
       <option
-        v-for="({ id, name }, i) in choices"
+        v-for="({ id, keyboard, layout }, i) in choices"
         :key="i"
         :value="id"
-        v-text="name"
+        v-text="`${keyboard} - ${layout}`"
       />
     </select>
   </div>
@@ -18,15 +18,15 @@
 
 <script>
 export default {
-  name: 'Selector',
+  name: "Selector",
   props: {
     id: null,
     label: String,
     choices: Array,
-    modelValue: [String, Number, Object]
+    modelValue: [String, Number, Object],
   },
-  emits: ['update:modelValue']
-}
+  emits: ["update:modelValue"],
+};
 </script>
 
 <style scoped>

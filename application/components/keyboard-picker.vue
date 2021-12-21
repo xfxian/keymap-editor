@@ -1,70 +1,63 @@
 <template>
-  <div id="spacer">
-    <!-- <selector
+  <div>
+    <selector
       v-model="source"
-      label="Source"
+      label="Select Keyboard"
       :id="source"
       :choices="sourceChoices"
     />
-
-    <github-picker v-if="source == 'github'" @select="handleKeyboardSelected" /> -->
   </div>
 </template>
 
 <script>
-import compact from "lodash/compact";
-
-import * as config from "../config";
 import { loadLayout } from "../layout.js";
 import { loadKeymap } from "../keymap.js";
 
-import GithubPicker from "./github/picker.vue";
 import Selector from "./selector.vue";
 
 export default {
   name: "KeyboardPicker",
-  components: { GithubPicker, Selector },
+  components: { Selector },
   emits: ["select"],
   data() {
-    const sourceChoices = compact([
-      config.enableLocal ? { id: "local", name: "Local" } : null,
-      config.enableGitHub ? { id: "github", name: "GitHub" } : null,
-    ]);
+    const sourceChoices = [
+      { keyboard: "BT60 v1", layout: "ANSI", id: "bt60v1_ansi" },
+      { keyboard: "BT60 v1", layout: "ISO", id: "bt60v1_iso" },
+      { keyboard: "BT60 v1", layout: "TSANGAN", id: "bt60v1_tsangan" },
+      { keyboard: "BT60 v1", layout: "1U", id: "bt60v1_1u" },
+
+      { keyboard: "BT60 v2", layout: "ANSI", id: "bt60v2_ansi" },
+      { keyboard: "BT60 v2", layout: "ISO", id: "bt60v2_iso" },
+      { keyboard: "BT60 v2", layout: "TSANGAN", id: "bt60v2_tsangan" },
+      { keyboard: "BT60 v2", layout: "1U", id: "bt60v2_1u" },
+    ];
 
     const selectedSource = localStorage.getItem("selectedSource");
-    const onlySource = sourceChoices.length === 1 ? sourceChoices[0].id : null;
 
     return {
       sourceChoices,
-      source:
-        onlySource ||
-        (sourceChoices.find((source) => source.id === selectedSource)
-          ? selectedSource.id
-          : null),
+      source: sourceChoices.find((source) => source.id === selectedSource)
+        ? selectedSource
+        : null,
     };
   },
   mounted() {
-    this.fetchLocalKeyboard();
-    // TODO: make this fetch differnt local keyboards
-    // if (this.source === "local") {
-    //   this.fetchLocalKeyboard();
-    // }
+    this.fetchLocalKeyboard(this.source);
   },
   watch: {
     source(value) {
       localStorage.setItem("selectedSource", value);
-      if (value === "local") {
-        this.fetchLocalKeyboard();
-      }
+      this.fetchLocalKeyboard(value);
     },
   },
   methods: {
-    async fetchLocalKeyboard() {
-      const { source } = this;
-      // pass differnt keyboard layout options here
-      const [layout, keymap] = await Promise.all([loadLayout(), loadKeymap()]);
+    async fetchLocalKeyboard(keyboardId) {
+      const [layout, keymap] = await Promise.all([
+        loadLayout(keyboardId),
+        loadKeymap(keyboardId),
+      ]);
 
-      this.handleKeyboardSelected({ source, layout, keymap });
+      this.handleKeyboardSelected({ source: keyboardId, layout, keymap });
     },
     handleKeyboardSelected(event) {
       const { source } = this;
@@ -82,8 +75,3 @@ export default {
 };
 </script>
 
-<style scoped>
-#spacer {
-  height: 20px;
-}
-</style>

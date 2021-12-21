@@ -156,7 +156,6 @@ export default {
       />
       <div id="actions">
         <button
-          v-if="source === 'local'"
           v-text="`Download Keymap`"
           id="compile"
           :disabled="!this.editingKeymap.keyboard || downloading"
@@ -164,7 +163,6 @@ export default {
         />
 
         <button
-          v-if="source === 'local'"
           id="compile"
           :disabled="!this.editingKeymap.keyboard || downloading"
           @click="handleBuild"
