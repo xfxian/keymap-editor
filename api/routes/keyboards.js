@@ -27,4 +27,17 @@ router.post('/keymap', (req, res) => {
   // })
 })
 
+// this just allows me to match what the pw site has, since the vue part is basically the same as
+// what's going to be on the site
+router.post('/api/editor/build', (req, res) => res.redirect(307, '/api/editor/keymap'))
+router.post("/api/editor/keymap", (req, res) => {
+  if (req.method === 'POST') {
+    const keymap = req.body
+    const layout = zmk.loadLayout()
+    const generatedKeymap = zmk.generateKeymap(layout, keymap)
+
+    return res.status(200).json(generatedKeymap.json)
+  }
+})
+
 module.exports = router
