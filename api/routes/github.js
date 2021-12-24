@@ -5,14 +5,12 @@ const {
   getOauthUser,
   getUserToken,
   verifyUserToken,
-  fetchInstallation,
   fetchInstallationRepos,
   fetchRepoBranches,
   fetchKeyboardFiles,
   createOauthFlowUrl,
   createOauthReturnUrl,
-  commitChanges,
-  InvalidRepoError,
+  commitChanges
 } = require('../services/github')
 const { createInstallationToken } = require('../services/github/auth')
 const { MissingRepoFile, findCodeKeymap } = require('../services/github/files')
@@ -39,12 +37,12 @@ const authorize = async (req, res) => {
 }
 
 const handleError = (err, req, res, next) => {
-  const message = err.response ? `[${err.response.status}] ${err.response.data}` : err
-  console.error(message, err)
-
   if (err.response && err.response.status === 401) {
-    console.error('Received upstream authentication error', err.re)
+    console.error('Received upstream authentication error', err.response.data)
     return res.sendStatus(401)
+  } else {
+    const message = err.response ? `[${err.response.status}] ${err.response.data}` : err
+    console.error(message, err)
   }
 
   res.sendStatus(500)
@@ -69,17 +67,15 @@ const authenticate = (req, res, next) => {
 
 const getInstallation = async (req, res, next) => {
   const { user } = req
-  
-  try {
-    const { data: installation } = await fetchInstallation(user.sub)
+  const { sub: username, oauth_access_token: userToken } = user
 
-    if (!installation) {
-      return res.json({ installation: null })
+  try {
+    const installationRepos = await fetchInstallationRepos(userToken)
+    if (installationRepos.installations.length === 0) {
+      console.log(`User ${username} does not have an active app installation.`)
     }
 
-    const repositories = await fetchInstallationRepos(user.oauth_access_token, installation.id)
-
-    res.json({ installation, repositories })
+    res.json(installationRepos)
   } catch (err) {
     next(err)
   }
@@ -113,12 +109,14 @@ const getKeyboardFiles = async (req, res, next) => {
     })
   } catch (err) {
     if (err instanceof MissingRepoFile) {
+      console.error(`Validation error in ${repository} (${branch}):`, err.constructor.name, err.errors)
       return res.status(400).json({
         name: err.constructor.name,
         path: err.path,
         errors: err.errors
       })
     } else if (err instanceof InfoValidationError || err instanceof KeymapValidationError) {
+      console.error(`Validation error in ${repository} (${branch}):`, err.constructor.name, err.errors)
       return res.status(400).json({
         name: err.name,
         errors: err.errors
