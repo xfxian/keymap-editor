@@ -21,6 +21,7 @@ export default {
   emits: ["select"],
   data() {
     const sourceChoices = [
+      { keyboard: "BT60 v1", layout: "HOTSWAP", id: "bt60v1_hotswap" },
       { keyboard: "BT60 v1", layout: "ANSI", id: "bt60v1_ansi" },
       { keyboard: "BT60 v1", layout: "ISO", id: "bt60v1_iso" },
       { keyboard: "BT60 v1", layout: "TSANGAN", id: "bt60v1_tsangan" },
