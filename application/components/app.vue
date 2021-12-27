@@ -100,8 +100,8 @@ export default {
           console.log("the payload", generatedKeymap, typeof generatedKeymap);
 
           const BUILDER_API_ENDPOINT =
-            "https://zmk-pw-builder-4u34d3yfla-de.a.run.app";
-
+            "https://zmk-pw-builder-uoxcukab3q-lz.a.run.app";
+          // const BUILDER_API_ENDPOINT = "https://zmk-pw-builder-4u34d3yfla-de.a.run.app"; // panzerstadt-prod
           // const BUILDER_API_ENDPOINT = "http://localhost:8080";
 
           return fetch(BUILDER_API_ENDPOINT, {
