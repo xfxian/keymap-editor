@@ -30,6 +30,7 @@ export default {
       downloading: false,
       buildingKeymap: false,
       buildError: false,
+      modalDismissed: false,
       terminalOpen: false,
       socket: null,
     };
@@ -185,8 +186,8 @@ export default {
           </div>
         </button>
 
-        <modal v-if="buildingKeymap && !buildError">
-          <dialog-box @dismiss="$emit('dismiss')">
+        <modal v-if="!modalDismissed && buildingKeymap && !buildError">
+          <dialog-box :dismissText="'Cool'" @dismiss="this.modalDismissed = true">
             <h2>This may take a while...</h2>
             <p>we are sending your keymap over to our cloud build instance in order to carefully craft your keymap.uf2 file.</p>
             <p>this may take up to 3 minutes on a good day.</p>
@@ -194,12 +195,14 @@ export default {
           </dialog-box>
         </modal>
         <modal v-if="!buildingKeymap && buildError">
-          <dialog-box @dismiss="$emit('dismiss')">
-            <h2>Oopsie!</h2>
-            <p>Ok there seems to be an issue with our firmware builder.</p>
+          <dialog-box :dismissText="''">
+            <h2 id="err">Oopsie!</h2>
+            <p>Ok... so there seems to be an issue with our firmware builder.</p>
             <p>Would you be a dear and ping us on our discord about it?</p>
             <p>Please mention the time when this happened!</p>
-            <p>timestamp: {{ new Date(Date.now()) }}</p>
+            <small><strong>{{ new Date(Date.now()) }}</strong></small>
+            <br />
+            <br />
           </dialog-box>
         </modal>
       </div>
@@ -243,5 +246,9 @@ button[disabled] {
   text-decoration: none;
 
   color: royalblue;
+}
+
+#err {
+  color: salmon;
 }
 </style>
