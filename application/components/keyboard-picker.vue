@@ -49,7 +49,7 @@ export default {
       sourceChoices,
       source: sourceChoices.find((source) => source.id === selectedSource)
         ? selectedSource
-        : sourceChoices[1], // default for bt60 ansi
+        : sourceChoices[1].id, // default for bt60 ansi
     };
   },
   mounted() {

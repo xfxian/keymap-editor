@@ -3,6 +3,8 @@ import Initialize from "./initialize.vue";
 import Keymap from "./keymap.vue";
 import KeyboardPicker from "./keyboard-picker.vue";
 import Spinner from "./spinner.vue";
+import Modal from './modal.vue'
+import DialogBox from './dialog-box.vue'
 
 import * as config from "../config";
 import github from "./github/api";
@@ -13,6 +15,8 @@ export default {
     KeyboardPicker,
     Initialize,
     Spinner,
+    Modal,
+    DialogBox
   },
   data() {
     return {
@@ -24,6 +28,8 @@ export default {
       editingKeymap: {},
       saving: false,
       downloading: false,
+      buildingKeymap: false,
+      buildError: false,
       terminalOpen: false,
       socket: null,
     };
@@ -86,7 +92,7 @@ export default {
         });
     },
     handleBuild() {
-      this.downloading = true;
+      this.buildingKeymap = true;
       fetch("/api/editor/build", {
         method: "POST",
         headers: {
@@ -138,11 +144,12 @@ export default {
           return a.dispatchEvent(event);
         })
         .then((_) => {
-          this.downloading = false;
+          this.buildingKeymap = false;
         })
         .catch((err) => {
           console.warn(err);
-          this.downloading = false;
+          this.buildError = true
+          this.buildingKeymap = false;
         });
     },
   },
@@ -163,31 +170,38 @@ export default {
         <button
           v-text="`Download Keymap`"
           id="compile"
-          :disabled="!this.editingKeymap.keyboard || downloading"
+          :disabled="!this.editingKeymap.keyboard || downloading || buildingKeymap"
           @click="handleCompile"
         />
 
         <button
           id="compile"
-          :disabled="!this.editingKeymap.keyboard || downloading"
+          :disabled="!this.editingKeymap.keyboard || downloading || buildingKeymap"
           @click="handleBuild"
         >
-          <template v-if="!downloading">Download Firmware </template>
-          <div v-if="downloading">
+          <template v-if="!buildingKeymap">Download Firmware </template>
+          <div v-if="buildingKeymap">
             <spinner /> <span>building firmware...</span>
           </div>
         </button>
 
-        <button
-          v-if="source === 'github'"
-          @click="handleCommitChanges"
-          :disabled="!this.editingKeymap.keyboard"
-          title="Commit keymap changes to GitHub repository"
-        >
-          <template v-if="saving">Saving </template>
-          <template v-else>Commit Changes</template>
-          <spinner v-if="saving || downloading" />
-        </button>
+        <modal v-if="buildingKeymap && !buildError">
+          <dialog-box @dismiss="$emit('dismiss')">
+            <h2>This may take a while...</h2>
+            <p>we are sending your keymap over to our cloud build instance in order to carefully craft your keymap.uf2 file.</p>
+            <p>this may take up to 3 minutes on a good day.</p>
+            <p>please keep this page open so that we can send you the file when we're done!</p>
+          </dialog-box>
+        </modal>
+        <modal v-if="!buildingKeymap && buildError">
+          <dialog-box @dismiss="$emit('dismiss')">
+            <h2>Oopsie!</h2>
+            <p>Ok there seems to be an issue with our firmware builder.</p>
+            <p>Would you be a dear and ping us on our discord about it?</p>
+            <p>Please mention the time when this happened!</p>
+            <p>timestamp: {{ new Date(Date.now()) }}</p>
+          </dialog-box>
+        </modal>
       </div>
     </template>
 
