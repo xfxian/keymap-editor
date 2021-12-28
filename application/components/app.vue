@@ -96,7 +96,9 @@ export default {
       })
         .then(async (res) => {
           const generatedKeymap = await res.text();
+          const keyboard = this.source;
 
+          console.log("the keyboard", this.source);
           console.log("the payload", generatedKeymap, typeof generatedKeymap);
 
           const BUILDER_API_ENDPOINT =
@@ -109,7 +111,10 @@ export default {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ keymapAsString: generatedKeymap }),
+            body: JSON.stringify({
+              keymapAsString: generatedKeymap,
+              keyboardId: keyboard,
+            }),
           });
         })
         .then(async (res) => {
@@ -117,7 +122,7 @@ export default {
           const blob = new Blob([blobResult]);
 
           let a = document.createElement("a");
-          a.download = "bt60.uf2";
+          a.download = "keymap.uf2";
           a.href = window.URL.createObjectURL(blob);
           a.dataset.downloadurl = [
             "application/octet-stream",

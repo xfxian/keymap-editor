@@ -39,7 +39,7 @@ export default {
 
       { keyboard: "BT75", layout: "ANSI", id: "bt75v1_ansi" },
       { keyboard: "BT75", layout: "ISO", id: "bt75v1_iso" },
-      { keyboard: "BT75", layout: "TSANGAN", id: "bt75v1_tsangan" },
+      // { keyboard: "BT75", layout: "TSANGAN", id: "bt75v1_tsangan" },
       { keyboard: "BT75", layout: "1U", id: "bt75v1_1u" },
     ];
 
