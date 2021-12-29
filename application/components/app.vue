@@ -200,7 +200,7 @@ export default {
             <p>Ok... so there seems to be an issue with our firmware builder.</p>
             <p>Would you be a dear and ping us on our discord about it?</p>
             <p>Please mention the time when this happened!</p>
-            <small><strong>{{ new Date(Date.now()).toIsoString() }}</strong></small>
+            <small><strong>{{ new Date(Date.now()).toISOString() }}</strong></small>
             <br />
             <br />
           </dialog-box>
