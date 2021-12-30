@@ -102,11 +102,11 @@ export default {
         body: JSON.stringify({ id: this.source, keymap: this.editingKeymap }),
       })
         .then(async (res) => {
+          if (!res.ok) throw new Error("Failed at step 1 of 2: keymap generation.")
+      
           const generatedKeymap = await res.text();
           const keyboard = this.source;
 
-          console.log("the keyboard", this.source);
-          console.log("the payload", generatedKeymap, typeof generatedKeymap);
 
           const BUILDER_API_ENDPOINT =
             "https://zmk-pw-builder-uoxcukab3q-lz.a.run.app";
