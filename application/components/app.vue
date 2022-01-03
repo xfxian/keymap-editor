@@ -3,8 +3,8 @@ import Initialize from "./initialize.vue";
 import Keymap from "./keymap.vue";
 import KeyboardPicker from "./keyboard-picker.vue";
 import Spinner from "./spinner.vue";
-import Modal from './modal.vue'
-import DialogBox from './dialog-box.vue'
+import Modal from "./modal.vue";
+import DialogBox from "./dialog-box.vue";
 
 import * as config from "../config";
 import github from "./github/api";
@@ -16,7 +16,7 @@ export default {
     Initialize,
     Spinner,
     Modal,
-    DialogBox
+    DialogBox,
   },
   data() {
     return {
@@ -30,9 +30,11 @@ export default {
       downloading: false,
       buildingKeymap: false,
       buildError: false,
+      queueFullError: false,
       modalDismissed: false,
       terminalOpen: false,
       socket: null,
+      buildRequestTimestamp: new Date(Date.now()).toISOString(),
     };
   },
   methods: {
@@ -102,12 +104,13 @@ export default {
         body: JSON.stringify({ id: this.source, keymap: this.editingKeymap }),
       })
         .then(async (res) => {
-          if (!res.ok) throw new Error("Failed at step 1 of 2: keymap generation.")
-      
+          if (!res.ok)
+            throw new Error("Failed at step 1 of 2: keymap generation.");
+
           const generatedKeymap = await res.text();
           const keyboard = this.source;
 
-
+          this.buildRequestTimestamp = new Date(Date.now()).toISOString();
           const BUILDER_API_ENDPOINT =
             "https://zmk-pw-builder-uoxcukab3q-lz.a.run.app";
           // const BUILDER_API_ENDPOINT = "https://zmk-pw-builder-4u34d3yfla-de.a.run.app"; // panzerstadt-prod
@@ -125,6 +128,15 @@ export default {
           });
         })
         .then(async (res) => {
+          if (!res.ok) {
+            if (res.status === 429 || res.status === 503) {
+              this.queueFullError = true;
+            }
+            throw new Error(
+              "Failed at step 2 of 2: uf2 compilation: too many requests to cloud builder."
+            );
+          }
+
           const blobResult = await res.blob();
           const blob = new Blob([blobResult]);
 
@@ -149,7 +161,7 @@ export default {
         })
         .catch((err) => {
           console.warn(err);
-          this.buildError = true
+          this.buildError = true;
           this.buildingKeymap = false;
         });
     },
@@ -171,13 +183,17 @@ export default {
         <button
           v-text="`Download Keymap`"
           id="compile"
-          :disabled="!this.editingKeymap.keyboard || downloading || buildingKeymap"
+          :disabled="
+            !this.editingKeymap.keyboard || downloading || buildingKeymap
+          "
           @click="handleCompile"
         />
 
         <button
           id="compile"
-          :disabled="!this.editingKeymap.keyboard || downloading || buildingKeymap"
+          :disabled="
+            !this.editingKeymap.keyboard || downloading || buildingKeymap
+          "
           @click="handleBuild"
         >
           <template v-if="!buildingKeymap">Download Firmware </template>
@@ -187,20 +203,54 @@ export default {
         </button>
 
         <modal v-if="!modalDismissed && buildingKeymap && !buildError">
-          <dialog-box :dismissText="'Cool'" @dismiss="this.modalDismissed = true">
+          <dialog-box
+            :dismissText="'Cool'"
+            @dismiss="this.modalDismissed = true"
+          >
             <h2>This may take a while... <spinner /></h2>
-            <p>we are sending your keymap over to our cloud build instance in order to carefully craft your keymap.uf2 file.</p>
+            <p>
+              we are sending your keymap over to our cloud build instance in
+              order to carefully craft your keymap.uf2 file.
+            </p>
             <p>this may take up to 3 minutes on a good day.</p>
-            <p>please keep this page open so that we can send you the file when we're done!</p>
+            <p>
+              please keep this page open so that we can send you the file when
+              we're done!
+            </p>
           </dialog-box>
         </modal>
+
         <modal v-if="!buildingKeymap && buildError">
           <dialog-box :dismissText="''">
             <h2 id="err">Oopsie!</h2>
-            <p>Ok... so there seems to be an issue with our firmware builder.</p>
+            <p>
+              Ok... so there seems to be an issue with our firmware builder.
+            </p>
             <p>Would you be a dear and ping us on our discord about it?</p>
             <p>Please mention the time when this happened!</p>
-            <small><strong>{{ new Date(Date.now()).toISOString() }}</strong></small>
+            <small
+              ><strong>{{ buildRequestTimestamp }}</strong></small
+            >
+            <br />
+            <br />
+          </dialog-box>
+        </modal>
+
+        <modal v-if="!buildingKeymap && queueFullError">
+          <dialog-box :dismissText="''">
+            <h2 id="err">Oopsie!</h2>
+            <p>
+              So it seems we have to many build requests hitting our builder
+              server.
+            </p>
+            <p>Perhaps try again in about 5 minutes?</p>
+            <p>
+              If this keeps happening to you, feel free to give us a ping on our
+              discord with your timestamp:
+            </p>
+            <small
+              ><strong>{{ buildRequestTimestamp }}</strong></small
+            >
             <br />
             <br />
           </dialog-box>
