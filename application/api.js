@@ -12,8 +12,13 @@ export function loadKeycodes() {
   return fetch(`${config.apiBaseUrl}/keycodes`).then(response => response.json())
 }
 
-export function loadKeymap(keyboardId) {
+export function loadDefaultKeymap(keyboardId) {
   return fetch(`${config.apiBaseUrl}/keymap?id=${keyboardId}`)
+    .then(response => response.json())
+}
+
+export function loadUserKeymap(userKeymap) {
+  return fetch(`${config.apiBaseUrl}/load`, { method: 'post', body: JSON.stringify(userKeymap) })
     .then(response => response.json())
 }
 
