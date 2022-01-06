@@ -164,9 +164,10 @@ export default {
         :keymap="editingKeymap.keyboard ? editingKeymap : keymap"
         @update="handleUpdateKeymap"
       />
+
       <div id="actions">
         <button
-          v-text="`Download Keymap`"
+          v-text="`Save Keymap`"
           id="compile"
           :disabled="
             !this.editingKeymap.keyboard || downloading || buildingKeymap
