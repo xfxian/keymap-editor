@@ -64,7 +64,7 @@ export default {
           const blob = new Blob([data], { type: "text/plain" });
 
           let a = document.createElement("a");
-          a.download = "keymap.json";
+          a.download = this.source + ".json";
           a.href = window.URL.createObjectURL(blob);
           a.dataset.downloadurl = ["text/json", a.download, a.href].join(":");
 
