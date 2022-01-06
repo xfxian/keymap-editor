@@ -79,6 +79,9 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# windows shortcuts
+*.lnk
+
 dist
 qmk_firmware
 zmk-config
