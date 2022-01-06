@@ -7,7 +7,6 @@ import Modal from "./modal.vue";
 import DialogBox from "./dialog-box.vue";
 
 import * as config from "../config";
-import github from "./github/api";
 
 export default {
   components: {
@@ -47,20 +46,6 @@ export default {
     },
     handleUpdateKeymap(keymap) {
       Object.assign(this.editingKeymap, keymap);
-    },
-    async handleCommitChanges() {
-      const { repository, branch } = this.sourceOther.github;
-
-      this.saving = true;
-      await github.commitChanges(
-        repository,
-        branch,
-        this.layout,
-        this.editingKeymap
-      );
-      this.saving = false;
-      Object.assign(this.keymap, this.editingKeymap);
-      this.editingKeymap = {};
     },
     handleCompile() {
       this.downloading = true;
