@@ -1,43 +1,47 @@
 
 <script>
 export default {
-  props: ['layers', 'activeLayer', 'onSelect'],
-  emits: ['select', 'new-layer'],
+  props: ["layers", "activeLayer", "onSelect"],
+  emits: ["select", "new-layer", "delete-layer"],
   data() {
     return {
-      renaming: false
-    }
+      renaming: false,
+    };
   },
   mounted() {
-    document.addEventListener('click', this.handleClickOutside)
+    document.addEventListener("click", this.handleClickOutside);
   },
   unmounted() {
-    document.removeEventListener('click', this.handleClickOutside)
+    document.removeEventListener("click", this.handleClickOutside);
   },
   methods: {
     handleSelect(layer) {
       if (layer === this.activeLayer) {
-        this.renaming = true
-        return
+        this.renaming = true;
+        return;
       }
 
-      this.renaming = false
-      this.$emit('select', layer)
+      this.renaming = false;
+      this.$emit("select", layer);
     },
     handleAdd() {
-      this.$emit('new-layer')
+      this.$emit("new-layer");
     },
-    handleDelete() {
-      alert('really delete?')
+    handleDelete(layerIndex, layerName) {
+      const confirmation = confirm(`really delete layer: ${layerName}?`);
+      if (confirmation) {
+        this.$emit("delete-layer", layerIndex);
+        this.$emit("select", 0); // jump back to first layer
+      }
     },
     handleClickOutside({ target }) {
-      const input = this.$el.querySelector('.active input.name')
+      const input = this.$el.querySelector(".active input.name");
       if (this.renaming && input !== target) {
-        this.renaming = false
+        this.renaming = false;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <template>
@@ -51,18 +55,18 @@ export default {
         :data-layer="i"
         @click.stop="handleSelect(i)"
       >
-        <span class="index">{{i}}</span>
+        <span class="index">{{ i }}</span>
         <input
           v-if="activeLayer == i && renaming"
           v-model="layers[i]"
-          :ref="input => input && input.focus()"
+          :ref="(input) => input && input.focus()"
           class="name"
         />
         <span class="name" v-else>
-          {{name}}
+          {{ name }}
           <span
             class="delete fa fa-times-circle"
-            @click.stop="handleDelete"
+            @click.stop="handleDelete(i, name)"
           />
         </span>
       </li>
@@ -75,7 +79,6 @@ export default {
 </template>
 
 <style>
-
 #layer-selector {
   position: absolute;
   z-index: 2;
@@ -83,27 +86,26 @@ export default {
 
 #layer-selector ul {
   display: inline-block;
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 #layer-selector li {
-	cursor: pointer;
-	background-color: rgba(201, 201, 201, 0.85);
-	color: darkgray;
-	border-radius: 15px;
+  cursor: pointer;
+  background-color: rgba(201, 201, 201, 0.85);
+  color: darkgray;
+  border-radius: 15px;
   height: 30px;
-	padding: 0px;
-	margin: 4px 2px;
-
+  padding: 0px;
+  margin: 4px 2px;
 }
 #layer-selector li:hover {
   background-color: rgba(60, 179, 113, 0.85);
   color: white;
 }
 #layer-selector li.active {
-	background-color: rgb(60, 179, 113);
-	color: white;
+  background-color: rgb(60, 179, 113);
+  color: white;
 }
 
 #layer-selector li * {
@@ -124,8 +126,9 @@ export default {
   padding: 0;
   font-variant: small-caps;
 }
-#layer-selector:hover li .name, #layer-selector[data-renaming="true"] li .name {
-  transition: .15s ease-in;
+#layer-selector:hover li .name,
+#layer-selector[data-renaming="true"] li .name {
+  transition: 0.15s ease-in;
   width: 120px;
   padding: 0 0 0 10px;
 }
@@ -153,6 +156,7 @@ export default {
   height: 30px;
   line-height: 30px;
   width: 30px;
+  cursor: pointer;
 }
 
 #layer-selector li.active .name {
