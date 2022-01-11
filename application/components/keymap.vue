@@ -117,6 +117,19 @@ export default {
       const updatedLayerNames = [...this.keymap.layer_names, `Layer #${layer}`];
       const layers = [...this.keymap.layers, newLayer];
 
+      if (layers.length === 20) {
+        alert(
+          `
+          Heads up power user! 
+
+          Technically its not an issue to have this many layers, but 
+          from this point on, you might start running out of memory on
+          your board! We're not stopping you pioneers from building your
+          100 layer behemoth keymap though, so... godspeed.
+          `
+        );
+      }
+
       this.$emit("update", {
         ...this.keymap,
         layer_names: updatedLayerNames,

@@ -89,6 +89,8 @@ export default {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  max-height: 80vh;
+  overflow: auto;
 }
 #layer-selector li {
   cursor: pointer;
