@@ -20,6 +20,7 @@ export default {
   emits: ["update"],
   inject: ["keycodes", "behaviours", "indexedKeycodes", "indexedBehaviours"],
   provide() {
+    // this is useContext (context provider)
     return {
       getSearchTargets: this.getSearchTargets,
       getSources: () => this.sources,
