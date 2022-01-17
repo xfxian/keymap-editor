@@ -1,0 +1,52 @@
+{
+  "files": {
+    "\\application\\main.js": [
+      "landmarks:entry"
+    ],
+    "\\application\\keymap.js": [
+      "logic"
+    ],
+    "\\application\\keycodes.js": [
+      "logic"
+    ],
+    "\\application\\key-units.js": [
+      "logic"
+    ],
+    "\\application\\api.js": [
+      "api:endpoints"
+    ],
+    "\\REFACTOR-README.md": [
+      "notes"
+    ],
+    "\\application\\components\\app.vue": [
+      "steps:saveJSON",
+      "steps:build",
+      "logic:save",
+      "logic:build"
+    ],
+    "\\application\\components\\keyboard-picker.vue": [
+      "steps:load",
+      "steps:selectKeyboard",
+      "logic:load"
+    ],
+    "\\application\\components\\layer-selector.vue": [
+      "logic:layers"
+    ],
+    "\\application\\components\\keymap.vue": [
+      "logic:keymap:bounding-box",
+      "logic:layers"
+    ],
+    "\\application\\components\\key.vue": [
+      "logic:keybind"
+    ],
+    "\\application\\components\\keyboard-layout.vue": [
+      "logic:keymap:individual-positions"
+    ],
+    "\\example-data\\keymap-parsed.json": [
+      "notes"
+    ],
+    "\\example-data\\layout.json": [
+      "notes"
+    ]
+  }
+}
