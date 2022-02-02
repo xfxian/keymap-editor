@@ -1,25 +1,21 @@
 <script>
 export default {
-  name: 'DialogBox',
-  emits: ['dismiss'],
+  name: "DialogBox",
+  emits: ["dismiss"],
   props: {
     dismissText: {
       type: String,
-      default: 'Ok'
-    }
-  }
-}
+      default: "Ok",
+    },
+  },
+};
 </script>
 
 <template>
   <div class="dialog">
     <slot />
     <p v-if="dismissText">
-      <button
-        class="dismiss"
-        @click="$emit('dismiss')"
-        v-text="dismissText"
-      />
+      <button class="dismiss" @click="$emit('dismiss')" v-text="dismissText" />
     </p>
   </div>
 </template>
