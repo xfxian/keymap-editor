@@ -82,6 +82,7 @@ export default {
 #layer-selector {
   position: absolute;
   z-index: 2;
+  left: 12px;
 }
 
 #layer-selector ul {
