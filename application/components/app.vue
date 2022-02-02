@@ -359,7 +359,6 @@ button[disabled] {
   left: 5px;
   font-size: 110%;
   font-style: italic;
-  background-color: white;
   border-radius: 20px;
   padding: 5px 10px;
   text-decoration: none;
