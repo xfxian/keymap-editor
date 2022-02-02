@@ -25,7 +25,7 @@ export default {
   background-color: white;
   padding: 20px 40px;
   margin: 40px;
-  max-width: 500px;
+  max-width: 600px;
   box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.4);
 }
 
