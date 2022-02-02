@@ -28,6 +28,7 @@ export default {
       saving: false,
       downloading: false,
       buildingKeymap: false,
+      showHelp: false,
       buildError: false,
       queueFullError: false,
       modalDismissed: false,
@@ -150,6 +151,12 @@ export default {
           this.buildingKeymap = false;
         });
     },
+    openHelp() {
+      this.showHelp = true;
+    },
+    closeHelp() {
+      this.showHelp = false;
+    },
   },
 };
 </script>
@@ -187,6 +194,70 @@ export default {
             <spinner /> <span>building firmware...</span>
           </div>
         </button>
+
+        <modal v-if="showHelp">
+          <dialog-box :dismissText="'ok!'" @dismiss="this.showHelp = false">
+            <h2>How to use the Keymap Editor</h2>
+            <small
+              ><i
+                >NOTE: you don’t need the keyboard in bootloader mode yet when
+                editing in the keymap editor</i
+              ></small
+            >
+            <ol>
+              <li>
+                select the keyboard that matches your BT series pcb from the
+                dropdown menu
+              </li>
+              <li>
+                the layout that shows up on the editor should match your BT
+                series pcb
+              </li>
+              <li>
+                for each key, click on the center symbols to change
+                <a href="https://zmk.dev/docs/codes/" target="_blank"
+                  >key codes</a
+                >
+              </li>
+              <li>
+                you can also click on the top left corner of the key to change
+                <a
+                  href="https://zmk.dev/docs/behaviors/key-press/"
+                  target="_blank"
+                  >key behaviours</a
+                >. most behaviours under the behavior section should be
+                supported. the <strong>&kp</strong> references are found under
+                <a
+                  href="https://zmk.dev/docs/behaviors/key-press#behavior-binding"
+                  target="_blank"
+                  >Behaviour binding</a
+                >
+              </li>
+              <li>
+                to your left are your keyboard layers, remember to bind
+                behaviours like
+                <a
+                  href="https://zmk.dev/docs/behaviors/layers#behavior-binding"
+                  target="_blank"
+                  ><strong>&mo</strong></a
+                >
+                to switch to them from your base layer!
+              </li>
+              <li>click on layer names to switch between layers</li>
+              <li>
+                click on the + icon to add layers, and x to delete layers (you
+                can't undo, so be careful)
+              </li>
+            </ol>
+            <small>
+              if you're unsure about anything, come ask us questions on
+              <a href="https://discord.com/invite/nBq8TShwP2" target="_blank"
+                >our discord</a
+              >
+              and we'll try our best to help you out!
+            </small>
+          </dialog-box>
+        </modal>
 
         <modal v-if="!modalDismissed && buildingKeymap && !buildError">
           <dialog-box
@@ -244,8 +315,12 @@ export default {
       </div>
     </template>
 
+    <button id="help" @click="openHelp">How to Use</button>
     <a class="github-link" href="https://github.com/nickcoutsos/keymap-editor">
-      custom port of <i class="fab fa-github" />/nickcoutsos/keymap-editor
+      <small
+        >custom port of
+        <i class="fab fa-github" />/nickcoutsos/keymap-editor</small
+      >
     </a>
   </initialize>
 </template>
@@ -266,6 +341,14 @@ button {
 button[disabled] {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+#help {
+  position: absolute;
+  z-index: 100;
+  bottom: 35px;
+  left: 12px;
+  padding: 6px 8px;
 }
 
 .github-link {
