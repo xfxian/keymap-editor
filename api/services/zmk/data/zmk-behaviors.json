@@ -123,6 +123,14 @@
     }, {
       "code": "RGB_EFR",
       "description": "Cycles the RGB feature's effect reverse"
+    }, {
+      "code": "RGB_MEFS_CMD",
+      "description": "Cycles the RGB feature's effect reverse",
+      "additionalParams": [{
+        "name": "index",
+        "type": "integer",
+        "enum": [0, 1, 2, 3, 4, 5, 6]
+      }]
     }]
   },
   {
