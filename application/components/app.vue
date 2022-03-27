@@ -303,6 +303,11 @@ export default {
             >
             <br />
             <br />
+            <button
+              v-text="`Quick, Save the Keymap!`"
+              id="compile"
+              @click="handleCompile"
+            />
           </dialog-box>
         </modal>
 
@@ -323,6 +328,11 @@ export default {
             >
             <br />
             <br />
+            <button
+              v-text="`Quick, Save the Keymap!`"
+              id="compile"
+              @click="handleCompile"
+            />
           </dialog-box>
         </modal>
       </div>
