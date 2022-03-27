@@ -55,45 +55,23 @@ import { loadDefaultKeymap, loadUserKeymap } from "../keymap.js";
 
 import Selector from "./selector.vue";
 import LoadUserKeymap from "./load-user-keymap.vue";
+import { FIRMWARES } from "../constants/firmware.js";
 
 export default {
   name: "KeyboardPicker",
   components: { Selector, LoadUserKeymap },
   emits: ["select"],
   data() {
-    const sourceChoices = [
-      { keyboard: "BT60 v1", layout: "HOTSWAP", id: "bt60v1_hotswap" },
-      { keyboard: "BT60 v1", layout: "ANSI", id: "bt60v1_ansi" },
-      { keyboard: "BT60 v1", layout: "ISO", id: "bt60v1_iso" },
-      { keyboard: "BT60 v1", layout: "TSANGAN", id: "bt60v1_tsangan" },
-      { keyboard: "BT60 v1", layout: "1U", id: "bt60v1_1u" },
-
-      { keyboard: "BT60 v2", layout: "ANSI", id: "bt60v2_ansi" },
-      { keyboard: "BT60 v2", layout: "ISO", id: "bt60v2_iso" },
-      { keyboard: "BT60 v2", layout: "TSANGAN", id: "bt60v2_tsangan" },
-      { keyboard: "BT60 v2", layout: "1U", id: "bt60v2_1u" },
-
-      { keyboard: "BT65", layout: "ANSI", id: "bt65v1_ansi" },
-      { keyboard: "BT65", layout: "ISO", id: "bt65v1_iso" },
-      { keyboard: "BT65", layout: "TSANGAN", id: "bt65v1_tsangan" },
-      { keyboard: "BT65", layout: "1U", id: "bt65v1_1u" },
-
-      { keyboard: "BT75", layout: "ANSI", id: "bt75v1_ansi" },
-      { keyboard: "BT75", layout: "ISO", id: "bt75v1_iso" },
-      // { keyboard: "BT75", layout: "TSANGAN", id: "bt75v1_tsangan" },
-      { keyboard: "BT75", layout: "1U", id: "bt75v1_1u" },
-    ];
-
     // before load, get from localStorage
     const lastKeyboardId = localStorage.getItem("pw-saved-keyboard-id");
 
     return {
       userKeymapError: false,
       keymapType: "preset", // preset or user
-      sourceChoices,
-      source: sourceChoices.find((source) => source.id === lastKeyboardId)
+      sourceChoices: FIRMWARES,
+      source: FIRMWARES.find((source) => source.id === lastKeyboardId)
         ? lastKeyboardId
-        : sourceChoices[1].id, // default for bt60 ansi
+        : FIRMWARES[1].id, // default for bt60 ansi
     };
   },
   mounted() {

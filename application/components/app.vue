@@ -7,6 +7,7 @@ import Modal from "./modal.vue";
 import DialogBox from "./dialog-box.vue";
 
 import * as config from "../config";
+import { getFirmware } from "../utils";
 
 export default {
   components: {
@@ -36,6 +37,14 @@ export default {
       socket: null,
       buildRequestTimestamp: new Date(Date.now()).toISOString(),
     };
+  },
+  computed: {
+    defaultFirmwareURL: function () {
+      if (this.source) {
+        return getFirmware(this.source);
+      }
+      return false;
+    },
   },
   methods: {
     handleKeyboardSelected({ source, layout, keymap, ...other }) {
@@ -195,6 +204,10 @@ export default {
           </div>
         </button>
 
+        <button id="compile" v-if="!!this.defaultFirmwareURL">
+          <a :href="this.defaultFirmwareURL">Download Default Firmware</a>
+        </button>
+
         <modal v-if="showHelp">
           <dialog-box :dismissText="'ok!'" @dismiss="this.showHelp = false">
             <h2>How to use the Keymap Editor</h2>
@@ -336,6 +349,10 @@ button {
   border-radius: 5px;
   padding: 5px;
   margin: 2px;
+}
+button > * {
+  color: white;
+  text-decoration: none;
 }
 
 button[disabled] {
