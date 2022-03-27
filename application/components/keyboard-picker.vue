@@ -96,7 +96,12 @@ export default {
         loadDefaultKeymap(keyboardId),
       ]);
 
-      this.handleKeyboardSelected({ source: keyboardId, layout, keymap });
+      this.handleKeyboardSelected({
+        source: keyboardId,
+        layout,
+        keymap,
+        type: "preset",
+      });
     },
     async fetchUserKeyboard(keymapJson) {
       this.setKeymapType("user");
@@ -120,7 +125,12 @@ export default {
         }),
       ]);
 
-      this.handleKeyboardSelected({ source: keyboardId, layout, keymap });
+      this.handleKeyboardSelected({
+        source: keyboardId,
+        layout,
+        keymap,
+        type: "user",
+      });
     },
     handleKeyboardSelected(event) {
       const { source } = this;

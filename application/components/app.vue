@@ -7,7 +7,7 @@ import Modal from "./modal.vue";
 import DialogBox from "./dialog-box.vue";
 
 import * as config from "../config";
-import { getFirmware } from "../utils";
+import { getFirmware, getKeyboard } from "../utils";
 
 export default {
   components: {
@@ -43,16 +43,27 @@ export default {
       if (this.source) {
         return getFirmware(this.source);
       }
-      return false;
+      return null;
+    },
+    defaultFirmwareName: function () {
+      if (this.source) {
+        const keeb = getKeyboard(this.source);
+        return keeb.keyboard + " " + keeb.layout;
+      }
+      return null;
     },
   },
   methods: {
-    handleKeyboardSelected({ source, layout, keymap, ...other }) {
+    handleKeyboardSelected({ source, layout, keymap, type, ...other }) {
       this.source = source;
       this.sourceOther = other;
       this.layout.splice(0, this.layout.length, ...layout);
       Object.assign(this.keymap, keymap);
-      this.editingKeymap = {};
+      if (type === "user") {
+        Object.assign(this.editingKeymap, keymap);
+      } else {
+        this.editingKeymap = {};
+      }
     },
     handleUpdateKeymap(keymap) {
       Object.assign(this.editingKeymap, keymap);
@@ -205,7 +216,9 @@ export default {
         </button>
 
         <button id="compile" v-if="!!this.defaultFirmwareURL">
-          <a :href="this.defaultFirmwareURL">Download Default Firmware</a>
+          <a :href="this.defaultFirmwareURL"
+            >Download Default Firmware for {{ defaultFirmwareName }}</a
+          >
         </button>
 
         <modal v-if="showHelp">
